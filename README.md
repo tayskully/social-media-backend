@@ -24,6 +24,7 @@ In order to check this application out, you will need to have a coding applicati
 
 Once you're set up in the coding application of your choice, run node index.js in the terminal to start the server. When the server is started, you can make calls through insomnia to see how the data reacts.
 You can create a user, add friends, remove friends, add thoughts, react to those thoughts, and see which data is related to which user. Enjoy! 
+Checkout this walk through for more a thorough demo: [Click Here!](https://watch.screencastify.com/v/rgW4WYUzodfP4bNChho1)
 
 ![Social Media Backend in action](assets/images/screenshot.png)
 ![Social Media Backend in action](assets/images/screenshot1.png)
