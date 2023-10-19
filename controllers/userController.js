@@ -4,7 +4,7 @@ module.exports = {
   // function to get all users
   async getUsers(req, res) {
     try {
-      const users = await User.find();
+      const users = await User.find().populate("friends").populate("thoughts");
       res.json(users);
     } catch (err) {
       res.status(500).json(err);
@@ -14,9 +14,10 @@ module.exports = {
   // function to get a single user
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId }).select(
-        "-__v"
-      );
+      const user = await User.findOne({ _id: req.params.userId })
+        .select("-__v")
+        .populate("friends")
+        .populate("thoughts");
 
       if (!user) {
         return res.status(404).json({ message: "No user with that ID" });
@@ -37,7 +38,7 @@ module.exports = {
     }
   },
   //function to update a user
-  async updateUser(res, req) {
+  async updateUser(req, res) {
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
@@ -48,7 +49,7 @@ module.exports = {
         return res.status(404).json({ message: "No user found with that ID" });
       }
       res.json(user);
-    } catch {
+    } catch (err) {
       console.log(err);
       res.status(500).json(err);
     }
@@ -63,7 +64,7 @@ module.exports = {
         return res.status(404).json({ message: "No user with that ID" });
       }
 
-      await Application.deleteMany({ _id: { $in: user.thoughts } });
+      await Thought.deleteMany({ _id: { $in: user.thoughts } });
       res.json({ message: "User and associated thoughts deleted!" });
     } catch (err) {
       res.status(500).json(err);
@@ -77,7 +78,7 @@ module.exports = {
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { reactions: req.body } },
+        { $addToSet: { friends: req.params.friendId } },
         { runValidators: true, new: true }
       );
 
@@ -96,7 +97,7 @@ module.exports = {
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { friends: { userId: req.params.userId } } },
+        { $pull: { friends: req.params.friendId } }, //renamed id to differentiate 
         { runValidators: true, new: true }
       );
 
